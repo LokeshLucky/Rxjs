@@ -2,9 +2,13 @@ import { concat, forkJoin, fromEvent, interval, of, zip } from 'rxjs';
 import {
   concatAll,
   concatWith,
+  exhaustAll,
   flatMap,
   map,
+  mergeAll,
   mergeMap,
+  switchAll,
+  switchMap,
   take,
 } from 'rxjs/operators';
 
@@ -28,3 +32,12 @@ let name1 = of(1, 2, 3, 4);
 const letters = of('a', 'b', 'c');
 const result = letters.pipe(mergeMap((x) => name1.pipe(map((i) => x + i))));
 result.subscribe((x) => console.log(x));
+
+//join
+const clicks = fromEvent(document, 'click');
+const higherOrder = clicks.pipe(map((ev) => interval(1000).pipe(take(4))));
+const firstOrder = higherOrder.pipe(concatAll());
+// const firstOrder = higherOrder.pipe(mergeAll());
+// const firstOrder = higherOrder.pipe(switchAll());
+// const firstOrder = higherOrder.pipe(exhaustAll());
+firstOrder.subscribe((x) => console.log(x));
